@@ -15,7 +15,7 @@ export default function RouterComp() {
                 element={<Navigate to="/posts" />} // auto redirects
             /> */}
             <Route path="/departments" element={<Departments />} />
-            <Route path="/employee" element={<Employees />} />
+           
         </Routes>
     )
 }
