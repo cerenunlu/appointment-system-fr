@@ -4,14 +4,27 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { DepartmentsProvider } from './context/departments';
-import { BrowserRouter } from 'react-router-dom';
+import { EmployeesProvider } from './context/employees';
+import { CustomersProvider } from './context/customers';
+import { AuthProvider } from './context/Auth';
+import { BrowserRouter, Route } from 'react-router-dom';
+import Navbar from './components/Sidebar/navbar';
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <DepartmentsProvider>
-        <App />
-      </DepartmentsProvider>
+      <AuthProvider>
+        <DepartmentsProvider>
+          <EmployeesProvider>
+            <CustomersProvider>
+              <App />
+
+            </CustomersProvider>
+
+          </EmployeesProvider>
+
+        </DepartmentsProvider>
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
