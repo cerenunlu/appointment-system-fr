@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { get_departments_list_request } from "../../api";
+import { get_departments_list_request } from "../../api/department/departments";
 
 const DepartmentsContext = createContext();
 export function DepartmentsProvider({ children }) {
@@ -10,6 +10,7 @@ export function DepartmentsProvider({ children }) {
     const [state, set_state] = useState(INITIAL_STATE);
 
     const get_departments_list = async () => {
+        console.log("test context")
         let response = await get_departments_list_request();
         console.log('response', response)
         set_state((prevState) => ({
