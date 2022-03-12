@@ -6,13 +6,13 @@ const EmployeesContext = createContext();
 export function EmployeesProvider({ children }) {
     let INITIAL_STATE = { // global states
         employees_list: [],
+       
     };
 
     const [state, set_state] = useState(INITIAL_STATE);
 
     const get_employees_list = async () => {
         let response = await get_employees_list_request();
-        console.log('response', response)
         set_state((prevState) => ({
             ...prevState,
             employees_list: response
@@ -20,13 +20,14 @@ export function EmployeesProvider({ children }) {
     };
 
 
-    const get_employees_by_departmentid = async () => {
-        let response = await post_employee_by_department_request();
-        console.log('response', response)
+    const get_employees_by_departmentid = async (department_data) => {
+        console.log("department da",department_data)
+        let response = await post_employee_by_department_request(department_data);
         set_state((prevState) => ({
             ...prevState,
             employees_list: response
         }))
+       
     };
 
 
