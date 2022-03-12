@@ -15,33 +15,24 @@ export const AuthProvider = ({ children }) => {
     };
     const [state, set_state] = useState(INITIAL_STATE);
     const post_login = async (login_data) => {
-        console.log("in post login")
         let response = await post_login_request(login_data);
         
         let isloggedIn = false
-        console.log("data.data")
-        console.log(response)
         const loggedIn = Object.values(response);
         if (loggedIn[0] == "success") {
-            console.log("basarili!!!!", loggedIn[0])
             set_access_token(loggedIn[1]);
             const x = get_access_token();
-            console.log(x);
-           console.log("before navigate")
             navigate('/admin-dash');
 
 
         } else {
-            console.log("basarisiz!!!!", loggedIn[0])
             return loggedIn;
         }
 
     };
     const post_register = async (customer_data) => {
-        console.log("DATA REGISTER")
         if (customer_data.password == customer_data.confirm_password) {
             let response = await post_customer_register_request(customer_data);
-            console.log(response)
             const loggedIn = Object.values(response);
             if (loggedIn[0] == "success") {
                 console.log("basarili!!!!", loggedIn[0])
