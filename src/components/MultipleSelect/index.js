@@ -9,21 +9,17 @@ import Select from '@mui/material/Select';
 
 export default function MultipleSelect({
     list,
+    onChange,
     select_header,
-   childToParent
 }) {
 
-    const onTrigger = () => {
-       childToParent(department)
-    }
-    const [department, setDepartment] = React.useState('');
+    const [value, setValue] = React.useState('');
 
     const handleChange = (event) => {
-        setDepartment(event.target.value)
-
-
+        setValue(event.target.value)
+        onChange(event.target.value)
     };
-    console.log(department)
+   
     return (
         <Box sx={{ minWidth: 120 }}>
             <FormControl fullWidth>
@@ -31,10 +27,9 @@ export default function MultipleSelect({
                 <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    value={department}
+                    value={value}
                     label="Age"
                     onChange={handleChange}
-                    onClick={onTrigger}
 
                 >
                     {list.map((obje) => (
