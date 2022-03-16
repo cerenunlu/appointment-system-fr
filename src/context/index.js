@@ -11,3 +11,7 @@ export {
     CustomersProvider,
     useCustomersContext
 } from "./customers";
+export {
+    AppointmentProvider,
+    useAppointmentContext
+} from "./appointments";
