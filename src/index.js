@@ -6,9 +6,12 @@ import reportWebVitals from './reportWebVitals';
 import { DepartmentsProvider } from './context/departments';
 import { EmployeesProvider } from './context/employees';
 import { CustomersProvider } from './context/customers';
+import { AppointmentProvider } from './context/appointments';
 import { AuthProvider } from './context/Auth';
 import { BrowserRouter, Route } from 'react-router-dom';
 import Navbar from './components/Sidebar/navbar';
+
+
 
 ReactDOM.render(
   <React.StrictMode>
@@ -17,12 +20,11 @@ ReactDOM.render(
         <DepartmentsProvider>
           <EmployeesProvider>
             <CustomersProvider>
+              <AppointmentProvider>
               <App />
-
+              </AppointmentProvider>
             </CustomersProvider>
-
           </EmployeesProvider>
-
         </DepartmentsProvider>
       </AuthProvider>
     </BrowserRouter>
