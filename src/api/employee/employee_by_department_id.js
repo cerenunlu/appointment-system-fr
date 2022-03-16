@@ -1,7 +1,7 @@
 import { fetch } from "../fetch";
 
-export const post_employee_by_department_request = async (departmentId) => {
-    const { data } = await fetch().get(`/employee/employee_by_department/${departmentId}`);
+export const post_employee_by_department_request = async (department_id) => {
+    const { data } = await fetch().post(`/employee/employee_by_department`,department_id);
     console.log("dataaaa", {data})
     return data.data
 }
