@@ -20,9 +20,9 @@ export function EmployeesProvider({ children }) {
     };
 
 
-    const get_employees_by_departmentid = async (department_data) => {
-        console.log("department da",department_data)
-        let response = await post_employee_by_department_request(department_data);
+    const get_employees_by_departmentid = async (department_id) => {
+        console.log("department dataaa",department_id)
+        let response = await post_employee_by_department_request(department_id);
         set_state((prevState) => ({
             ...prevState,
             employees_list: response
