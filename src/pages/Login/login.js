@@ -41,15 +41,12 @@ function Login() {
         const new_data = { ...data }
         new_data[e.target.id] = e.target.value
         set_data(new_data)
-        console.log(new_data)
-
     }
 
     const on_login = async (e) => {
         e.preventDefault();
-        console.log("onlogin");
-
-        await post_login(data);
+        const test=await post_login(data);
+        console.log("login tst",test);
 
     }
     const register_customer = async (e) => {
