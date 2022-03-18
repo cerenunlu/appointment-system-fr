@@ -22,44 +22,6 @@ function CreateAppointment() {
   const avatarEmployeeStyle = { backgroundColor: "#64b5f6" };
 
   //TIME//
-  const times = [
-    {
-      id: 1,
-      time: "09:00",
-    },
-    {
-      id: 2,
-      time: "10:00",
-    },
-    {
-      id: 3,
-      time: "11:00",
-    },
-    {
-      id: 4,
-      time: "12:00",
-    },
-    {
-      id: 5,
-      time: "13:00",
-    },
-    {
-      id: 6,
-      time: "14:00",
-    },
-    {
-      id: 7,
-      time: "15:00",
-    },
-    {
-      id: 8,
-      time: "16:00",
-    },
-    {
-      id: 9,
-      time: "17:00",
-    },
-  ];
 
   //DEPARTMENTS CONST
   let selected_times_data = [];
@@ -73,7 +35,7 @@ function CreateAppointment() {
   const { employees_list } = employees_context;
 
   const { get_time, appointment_context } = useAppointmentContext();
-  const { appointments_list } = appointment_context;
+  const { all_times_list } = appointment_context;
   let filtered_times = [];
   ///department///
   const get_departments_data = async () => {
@@ -82,6 +44,8 @@ function CreateAppointment() {
   useEffect(() => {
     get_departments_data();
   }, []);
+
+  const [isDisabled, setDisabled] = useState(false);
 
   const [data, set_data] = useState({
     date: "",
@@ -94,7 +58,7 @@ function CreateAppointment() {
     const department = {
       department_id: value,
     };
-    console.log("department_id: ", department);
+  
     get_employees_by_departmentid(department);
   };
 
@@ -112,16 +76,20 @@ function CreateAppointment() {
 
     if (value != null) {
       const date_value = {
+        employee_id:employee_id_value,
         date: value,
       };
-     
+      console.log("aaaaa",date_value);
       get_time(date_value);
       date_value_data = date_value.date;
     }
   };
 
   const select_time = async (e) => {
-    selected_times_data = times.find((obj) => obj.id == e.target.value);
+    selected_times_data = all_times_list.find(
+      (obj) => obj.id == e.target.value
+    );
+   
   };
 
   const { post_appointment } = useAppointmentContext();
@@ -134,22 +102,12 @@ function CreateAppointment() {
       customer_id: "0",
     };
     set_data(new_data);
-    console.log("CREATE DATA", new_data);
+   
     e.preventDefault();
-    await post_appointment(data);
+    await post_appointment(new_data);
+   
   };
-  const filter_times = () => {
-    console.log("FILTER TIMES TEST");
-    if (appointments_list.status == "all times available") {
-      console.log("aaaaaaa", appointments_list.data);
-      filtered_times = times;
-      console.log("FILTER FILTER", filter_times);
-    } else {
-      filtered_times = times.filter(
-        (item) => !appointments_list.includes(item)
-      );
-    }
-  };
+
   ////////////
   return (
     <>
@@ -183,16 +141,19 @@ function CreateAppointment() {
                 <DatePicker onChange={onChangeDate} value={dateValue} />
                 <br />
                 <br />
-                {appointments_list.map((obje) => (
+                {all_times_list.map((obje) => (
+                  obje.disabled==true,
                   <Button
                     variant="contained"
                     color="success"
                     key={obje.id}
                     value={obje.id}
                     onClick={select_time}
+                    disabled={obje.disabled}
                   >
                     {obje.time}
                   </Button>
+                 
                 ))}
 
                 <br />
