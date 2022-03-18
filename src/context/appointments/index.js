@@ -6,43 +6,62 @@ const AppointmentContext = createContext({});
 export function AppointmentProvider({ children }) {
   let INITIAL_STATE = {
     appointments_list: [],
+    all_times_list: [],
   };
   let times = [
     {
       id: 1,
       time: "09:00",
+      selected: false,
+      disabled: false,
     },
     {
       id: 2,
       time: "10:00",
+      selected: false,
+      disabled: false,
     },
     {
       id: 3,
       time: "11:00",
+      selected: false,
+      disabled: false,
     },
     {
       id: 4,
       time: "12:00",
+      selected: false,
+      disabled: false,
     },
     {
       id: 5,
       time: "13:00",
+      selected: false,
+      disabled: false,
     },
     {
       id: 6,
       time: "14:00",
+      selected: false,
+      disabled: false,
     },
     {
       id: 7,
       time: "15:00",
+      selected: false,
+      disabled: false,
     },
     {
       id: 8,
       time: "16:00",
+      selected: false,
+      disabled: false,
     },
     {
       id: 9,
       time: "17:00",
+      selected: false,
+      disabled: false,
     },
   ];
   let filtered_times = [];
@@ -50,38 +69,39 @@ export function AppointmentProvider({ children }) {
 
   const post_appointment = async (appointment_data) => {
     let response = await post_appointment_create(appointment_data);
-    console.log("response appointment", response);
   };
   const get_time = async (date) => {
     let response = await get_exist_time(date);
-    console.log("context test times response", response.data.status);
-    console.log("DBden dönen var olan saatler", response.data.data);
+
     if (response.data.status == "all times available") {
-      console.log("Hiç saat yoksa", response.data);
-      filtered_times = response.data.data;
-      console.log("FILTER FILTER", filtered_times);
+      filtered_times = times;
     } else {
       let response_times = response.data.data;
-      console.log("response times", response_times[0].time);
+
       const test = [
         {
           id: "0",
           time: response_times[0].time,
         },
       ];
-      console.log("tstdata", test);
-      console.log("times", times);
-      console.log("Saat varsa", response.data.data);
+
       for (let i = 0; i < times.length; i++) {
-        if (times[i].time != response_times[0].time) {
-          filtered_times.push(times[i]);
+        for (let k = 0; k < response_times.length; k++) {
+          if (times[i].time == response_times[k].time) {
+            times[i].selected = true;
+          }
         }
       }
-      console.log("filtered times", filtered_times);
+
+      for (let j = 0; j < times.length; j++) {
+        if (times[j].selected != true) {
+          filtered_times.push(times[j]);
+        }
+      }
     }
     set_state((prevState) => ({
       ...prevState,
-      appointments_list: filtered_times,
+      all_times_list: filtered_times,
     }));
   };
 
