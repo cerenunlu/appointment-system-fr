@@ -1,12 +1,18 @@
 import { createContext, useContext, useState } from "react";
 import { post_appointment_create } from "../../api/appointment/appointment_by_customer_id";
 import { get_exist_time } from "../../api/appointment/available_date";
+import { get_appointment_by_customer_id_request } from "../../api/appointment/get_appointment_by_customer_id";
+import { get_appointment_by_employee_id_request } from "../../api/appointment/get_appointments_by_employee_id";
+import { get_appointment_all_request } from "../../api/appointment/get_appointments_all";
 const AppointmentContext = createContext({});
 
 export function AppointmentProvider({ children }) {
   let INITIAL_STATE = {
-    appointments_list: [],
     all_times_list: [],
+    post_response: [],
+    appointments_by_customer_id:[],
+    appointments_by_id: [],
+    all_appointments: [],
   };
   let times = [
     {
@@ -65,10 +71,13 @@ export function AppointmentProvider({ children }) {
     },
   ];
   let filtered_times = [];
+
   const [state, set_state] = useState(INITIAL_STATE);
 
   const post_appointment = async (appointment_data) => {
-    let response = await post_appointment_create(appointment_data);
+    let post_data = await post_appointment_create(appointment_data);
+   
+    return post_data.data;
   };
   const get_time = async (date) => {
     let response = await get_exist_time(date);
@@ -105,12 +114,40 @@ export function AppointmentProvider({ children }) {
     }));
   };
 
+  const get_appointment_by_customer_id = async (id) => {
+    let appointments = await get_appointment_by_customer_id_request(id);
+    set_state((prevState)=>({
+      ...prevState,
+      appointments_by_customer_id: appointments,
+    }));
+  };
+
+  const get_appointment_by_employee_id = async (id) => {
+    let appointments = await get_appointment_by_employee_id_request(id);
+   
+    set_state((prevState) => ({
+      ...prevState,
+      appointments_by_id: appointments,
+    }));
+  };
+  const get_appointment_all = async () => {
+    let appointments = await get_appointment_all_request();
+
+    set_state((prevState)=>({
+      ...prevState,
+      all_appointments: appointments,
+    }));
+  };
+
   return (
     <AppointmentContext.Provider
       value={{
         appointment_context: state,
         post_appointment,
         get_time,
+        get_appointment_by_customer_id,
+        get_appointment_by_employee_id,
+        get_appointment_all,
       }}
     >
       {children}

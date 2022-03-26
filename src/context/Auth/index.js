@@ -1,12 +1,13 @@
 import { createContext, useContext, useState } from "react";
 import { post_login_request } from "../../api/Auth/login";
 import { post_customer_register_request } from "../../api/Auth/register";
-import { token_storage,user_storage } from "../../helpers";
+import { token_storage, user_storage, user_data_storage } from "../../helpers";
 import { useNavigate } from "react-router-dom";
 const AuthContext = createContext({});
 
 const { set_access_token, get_access_token, delete_token_data } = token_storage;
-const {set_user_tokens,get_user_data}=user_storage;
+const { set_user_tokens, get_user_data } = user_storage;
+const { setData, getData } = user_data_storage;
 export const AuthProvider = ({ children }) => {
   let navigate = useNavigate();
   let INITIAL_STATE = {
@@ -16,14 +17,13 @@ export const AuthProvider = ({ children }) => {
   const [state, set_state] = useState(INITIAL_STATE);
   const post_login = async (login_data) => {
     let response = await post_login_request(login_data);
-
-    let isloggedIn = false;
     const loggedIn = Object.values(response);
     if (loggedIn[0] == "success") {
       set_access_token(loggedIn[1]);
       set_user_tokens(loggedIn[1]);
-      const x = get_access_token();
-      navigate("/admin-dash");
+      setData(response.userData);
+      const a = getData();
+      navigate("/dashboard");
       return response;
     } else {
       return loggedIn;
@@ -34,15 +34,15 @@ export const AuthProvider = ({ children }) => {
       let response = await post_customer_register_request(customer_data);
       const loggedIn = Object.values(response);
       if (loggedIn[0] == "success") {
-        console.log("basarili!!!!", loggedIn[0]);
+      
         set_access_token(loggedIn[1]);
         const x = get_access_token();
-        const user=get_user_data();
-        console.log(x);
-        console.log("userdata",user);
+
+        const test = getData();
+       
         navigate("/admin-dash");
       } else {
-        console.log("basarisiz!!!!", loggedIn[0]);
+     
         return loggedIn;
       }
     }

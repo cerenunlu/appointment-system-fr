@@ -11,10 +11,9 @@ export function fetch() {
     const access_token = get_access_token();
     set_user_tokens(access_token);
     const user_token = get_user_data();
-    console.log(access_token)
-    console.log(user_token)
+   
     if (typeof window !== 'undefined') {
-        console.log(window);
+      
         let axios = Axios.create({
             baseURL: BASE_URL,
             headers: {

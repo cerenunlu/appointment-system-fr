@@ -4,11 +4,10 @@ import { useEmployeesContext } from "../../context/employees";
 import Navbar from '../../components/Sidebar/navbar';
 import Content from '../../components/Content/content'
 import Table from '../../components/Table/table';
-
+import Button from '@mui/material/Button';
 function Employees() {
   const { get_employees_list, employees_context } = useEmployeesContext();
   const { employees_list } = employees_context;
-  console.log('employees_list', employees_list)
   const colNames = ['#', 'Name','Surname', 'Email', 'Role', 'Department','Setting'];
 
   const get_data = async () => {
@@ -18,7 +17,6 @@ function Employees() {
   useEffect(() => {
     get_data()
   }, [])
-  console.log(employees_list);
   let employee_props=employees_list.map(employee=>{
     let props={
       id:employee.id,
@@ -31,8 +29,9 @@ function Employees() {
     return props;
 
   });
-  console.log("props");
-  console.log(employee_props);
+  const create_employee=async()=>{
+    window.location.href = "/create-employee";
+  }
   return (
     <>
       <Navbar />
@@ -51,6 +50,7 @@ function Employees() {
             </ul>
         } */}
         <Table list={employee_props} colNames={colNames} />
+        <Button onClick={create_employee} variant="contained" >Create New Employee</Button>
       </div>
 
     </>

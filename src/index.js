@@ -6,10 +6,11 @@ import reportWebVitals from './reportWebVitals';
 import { DepartmentsProvider } from './context/departments';
 import { EmployeesProvider } from './context/employees';
 import { CustomersProvider } from './context/customers';
+import { RolesProvider } from './context/roles';
 import { AppointmentProvider } from './context/appointments';
 import { AuthProvider } from './context/Auth';
 import { BrowserRouter, Route } from 'react-router-dom';
-import Navbar from './components/Sidebar/navbar';
+
 
 
 
@@ -21,7 +22,9 @@ ReactDOM.render(
           <EmployeesProvider>
             <CustomersProvider>
               <AppointmentProvider>
-              <App />
+                <RolesProvider>
+                <App />
+                </RolesProvider>
               </AppointmentProvider>
             </CustomersProvider>
           </EmployeesProvider>

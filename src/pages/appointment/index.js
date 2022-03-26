@@ -8,7 +8,9 @@ import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
 import Navbar from "../../components/Sidebar/navbar";
 import MultipleSelect from "../../components/MultipleSelect/index";
 import { useAppointmentContext, useDepartmentsContext } from "../../context";
+import { useCustomersContext } from "../../context";
 import { useEmployeesContext } from "../../context/";
+import SuccessModal from "../../components/Modal/SuccessModal";
 
 function CreateAppointment() {
   //STYLE//
@@ -30,13 +32,21 @@ function CreateAppointment() {
   const { get_departments_list, departments_context } = useDepartmentsContext();
   const { departments_list } = departments_context;
   const department_select_header = "Department";
-  const { get_employees_by_departmentid, employees_context } =
-    useEmployeesContext();
+  const {
+    get_employees_by_departmentid,
+    get_employee_by_id,
+    employees_context,
+  } = useEmployeesContext();
   const { employees_list } = employees_context;
 
   const { get_time, appointment_context } = useAppointmentContext();
   const { all_times_list } = appointment_context;
-  let filtered_times = [];
+  const { post_appointment } = useAppointmentContext();
+  const { post_response } = appointment_context;
+  const { get_customer_by_id } = useCustomersContext();
+
+  const [select_time_index, set_select_time_index] = useState(null);
+
   ///department///
   const get_departments_data = async () => {
     await get_departments_list();
@@ -45,73 +55,92 @@ function CreateAppointment() {
     get_departments_data();
   }, []);
 
-  const [isDisabled, setDisabled] = useState(false);
-
   const [data, set_data] = useState({
     date: "",
     time: "",
     customer_id: "",
     department_id: "",
   });
+  const [data_appointment, setDataAppointment] = useState({
+    date: "",
+    time: "",
+    customer_name: "",
+    employee_name: "",
+  });
+
   const onChangeDepartment = (value) => {
-    console.log({ value });
     const department = {
       department_id: value,
     };
-  
+
     get_employees_by_departmentid(department);
   };
 
   const [employee_id_value, setEmployeeId] = useState();
   const onChangeEmployee = (value) => {
-    console.log({ value });
     setEmployeeId(value);
   };
 
   const [dateValue, onChange] = useState(new Date());
-
+  const [timeValue, set_timeValue] = useState();
   const onChangeDate = (value) => {
-    console.log({ value });
     onChange(value);
 
     if (value != null) {
       const date_value = {
-        employee_id:employee_id_value,
+        employee_id: employee_id_value,
         date: value,
       };
-      console.log("aaaaa",date_value);
       get_time(date_value);
       date_value_data = date_value.date;
     }
   };
 
-  const select_time = async (e) => {
-    selected_times_data = all_times_list.find(
-      (obj) => obj.id == e.target.value
-    );
-   
+  const select_time = async (item, index) => {
+    console.log(index);
+    set_select_time_index(index);
+    console.log("select time", select_time_index);
+
+    selected_times_data = all_times_list.find((obj) => obj.id == item.id);
+    console.log(selected_times_data.time);
+    set_timeValue(selected_times_data.time);
+    console.log("jdj", timeValue);
   };
 
-  const { post_appointment } = useAppointmentContext();
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const createAppointment = async (e) => {
     const new_data = {
       date: dateValue,
-      time: selected_times_data.time,
+      time: timeValue,
       employee_id: employee_id_value,
       customer_id: "0",
     };
     set_data(new_data);
-   
-    e.preventDefault();
-    await post_appointment(new_data);
-   
-  };
 
+    e.preventDefault();
+    const post = await post_appointment(new_data);
+    if (post.id != null) {
+      const employee_info = await get_employee_by_id(new_data.employee_id);
+      const customer_info = await get_customer_by_id(post.customer_id);
+      const created_data = {
+        date: dateValue,
+        time: selected_times_data.time,
+        employee_name: employee_info.data.name,
+        customer_name: customer_info.data.name,
+      };
+      setDataAppointment(created_data);
+
+      handleOpen();
+    }
+  };
   ////////////
   return (
     <>
       <Navbar />
+
       <Grid container rowSpacing={0} columnSpacing={{ xs: 0, sm: 0, md: 0 }}>
         <Grid item xs={12}>
           <Paper elevation={10} style={customerPaperStyle}>
@@ -141,20 +170,25 @@ function CreateAppointment() {
                 <DatePicker onChange={onChangeDate} value={dateValue} />
                 <br />
                 <br />
-                {all_times_list.map((obje) => (
-                  obje.disabled==true,
-                  <Button
-                    variant="contained"
-                    color="success"
-                    key={obje.id}
-                    value={obje.id}
-                    onClick={select_time}
-                    disabled={obje.disabled}
-                  >
-                    {obje.time}
-                  </Button>
-                 
-                ))}
+                {all_times_list.map(
+                  (item, index) => (
+                    item.disabled == true,
+                    (
+                      <Button
+                        variant="contained"
+                        color={
+                          index === select_time_index ? "success" : "error"
+                        }
+                        key={item.id}
+                        value={item.id}
+                        onClick={() => select_time(item, index)}
+                        disabled={item.disabled}
+                      >
+                        {item.time}
+                      </Button>
+                    )
+                  )
+                )}
 
                 <br />
                 <br />
@@ -170,6 +204,12 @@ function CreateAppointment() {
             </Box>
           </Paper>
         </Grid>
+        <SuccessModal
+          openModal={open}
+          closeModal={handleClose}
+          info={data_appointment}
+          header="Appointment"
+        />
       </Grid>
     </>
   );

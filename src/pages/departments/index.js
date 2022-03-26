@@ -8,7 +8,6 @@ import Table from '../../components/Table/table';
 function Departments() {
     const { get_departments_list, departments_context } = useDepartmentsContext();
     const { departments_list } = departments_context;
-    console.log('departments_list', departments_list)
     const colNames = ['#', 'Name', 'Setting'];
 
     const get_data = async () => {

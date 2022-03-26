@@ -8,7 +8,6 @@ import Table from '../../components/Table/table';
 function Employees() {
     const { get_customers_list, customers_context } = useCustomersContext();
     const { customers_list } = customers_context;
-    console.log('customers_list', customers_list)
     const colNames = ['#', 'Name', 'Surname', 'Email', 'Date', 'Employee', 'Setting'];
 
     const get_data = async () => {
@@ -19,7 +18,6 @@ function Employees() {
         get_data()
     }, [])
 
-    console.log(customers_list);
     let customer_props = customers_list.map(customer => {
         let props = {
             id: customer.id,
@@ -32,8 +30,6 @@ function Employees() {
         return props;
 
     });
-    console.log("props");
-    console.log(customer_props);
     return (
         <>
             <Navbar />

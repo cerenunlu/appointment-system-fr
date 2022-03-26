@@ -19,20 +19,15 @@ export const AuthProvider = ({ children }) => {
         }
         let isloggedIn = false
         let response = await post_customer_register_request(customer_data);
-        console.log("data.data")
-        console.log(response)
         const loggedIn = Object.values(response);
         if (loggedIn[0] == "success") {
-            console.log("basarili!!!!", loggedIn[0])
             set_access_token(loggedIn[1]);
             const x = get_access_token();
-            console.log(x);
             delete_token_data();
             navigate('/admin-dash');
 
 
         } else {
-            console.log("basarisiz!!!!", loggedIn[0])
             return isloggedIn;
         }
 
